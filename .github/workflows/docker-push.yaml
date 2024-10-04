@@ -1,0 +1,45 @@
+name: Build and Push Docker Image  
+
+on:  
+  push:  
+    branches:  
+      - main  # Change this to your default branch  
+  tags:  
+    - v*      # Optional: Trigger on version tags like v1.0.0  
+
+jobs:  
+  build:  
+    runs-on: ubuntu-latest  
+
+    steps:  
+    - name: Checkout code  
+      uses: actions/checkout@v2  
+
+    - name: Set up QEMU for multi-platform builds  
+      uses: docker/setup-qemu-action@v2  
+    
+    - name: Set up Docker Buildx  
+      uses: docker/setup-buildx-action@v2  
+
+    - name: Cache Docker layers  
+      uses: actions/cache@v2  
+      with:  
+        path: /tmp/.buildx-cache  
+        key: ${{ runner.os }}-buildx-${{ github.sha }}  
+        restore-keys: |  
+          ${{ runner.os }}-buildx-  
+
+    - name: Build and push Docker image  
+      uses: docker/build-push-action@v2  
+      with:  
+        context: .  
+        push: true  
+        tags: |  
+          sa2avroo/nextjs-standalone-new:latest  
+          sa2avroo/nextjs-standalone-new:${{ github.sha }}  # Use commit SHA as version  
+          sa2avroo/nextjs-standalone-new:${{ github.ref_name }} # Use branch/tag name as version  
+      env:  
+        DOCKER_BUILDKIT: 1
+        # Optional: Set up a GitHub token for private repositories  
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
