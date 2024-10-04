@@ -41,9 +41,9 @@ jobs:
         context: .  # Set the context to the current directory  
         push: true   # Push the built image to Docker Hub  
         tags: |  
-          sa2avroo/nextjs-standalone-new:latest               # Latest tag  
-          sa2avroo/nextjs-standalone-new:${{ github.sha }}    # Use commit SHA as version  
-          sa2avroo/nextjs-standalone-new:${{ github.ref_name }} # Use branch/tag name as version  
+          sa2avroo/nextjs-standalone-new:latest  
+          sa2avroo/nextjs-standalone-new:${{ github.sha }}  
+          sa2avroo/nextjs-standalone-new:${{ github.ref_name }} 
       
     - name: Logout from Docker Hub  
       run: docker logout  # Optional: Logout after the build and push process
