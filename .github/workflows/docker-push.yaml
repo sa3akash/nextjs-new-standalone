@@ -2,8 +2,8 @@ name: Build and Push Docker Image
 
 on:  
   push:  
-    branches:  
-      - main  # Change this to your default branch  
+    # branches:  
+    #   - main  # Change this to your default branch  
     tags:  
       - v*      # Trigger on version tags like v1.0.0  
 
