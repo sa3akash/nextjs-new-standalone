@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 RUN npm install -g npm@latest && npm install -g bun
-COPY package.json bun.lock ./
+COPY package.json bun.lockb ./
 RUN bun install
 
 
