@@ -4,8 +4,8 @@ on:
   push:  
     branches:  
       - main  # Change this to your default branch  
-  tags:  
-    - v*      # Optional: Trigger on version tags like v1.0.0  
+    tags:  
+      - v*      # Trigger on version tags like v1.0.0  
 
 jobs:  
   build:  
@@ -21,8 +21,14 @@ jobs:
     - name: Set up Docker Buildx  
       uses: docker/setup-buildx-action@v2  
 
+    - name: Login to Docker Hub  
+      uses: docker/login-action@v2  # Use the latest version  
+      with:  
+        username: ${{ secrets.DOCKER_USERNAME }}  
+        password: ${{ secrets.DOCKER_TOKEN }}  
+
     - name: Cache Docker layers  
-      uses: actions/cache@v2  
+      uses: actions/cache@v3  # Make sure you're using the latest version  
       with:  
         path: /tmp/.buildx-cache  
         key: ${{ runner.os }}-buildx-${{ github.sha }}  
@@ -30,16 +36,14 @@ jobs:
           ${{ runner.os }}-buildx-  
 
     - name: Build and push Docker image  
-      uses: docker/build-push-action@v2  
+      uses: docker/build-push-action@v3  # Ensure you're using the latest version  
       with:  
-        context: .  
-        push: true  
+        context: .  # Set the context to the current directory  
+        push: true   # Push the built image to Docker Hub  
         tags: |  
-          sa2avroo/nextjs-standalone-new:latest  
-          sa2avroo/nextjs-standalone-new:${{ github.sha }}  # Use commit SHA as version  
+          sa2avroo/nextjs-standalone-new:latest               # Latest tag  
+          sa2avroo/nextjs-standalone-new:${{ github.sha }}    # Use commit SHA as version  
           sa2avroo/nextjs-standalone-new:${{ github.ref_name }} # Use branch/tag name as version  
-      env:  
-        DOCKER_BUILDKIT: 1
-        # Optional: Set up a GitHub token for private repositories  
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}  
-        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      
+    - name: Logout from Docker Hub  
+      run: docker logout  # Optional: Logout after the build and push process
